@@ -22,6 +22,7 @@
 #include <string>
 #include <stdio.h>
 #include <dynamic_libs/os_types.h>
+#include <map>
 #include <vector>
 
 class CSettings {
@@ -131,6 +132,10 @@ public:
         return *(instance()->nullValue.strValue);
     }
 
+    static const std::string & getDynamicValue(std::string key) {
+        return instance()->settingsDynamic[key];
+    }
+
     static void setValueAsBool(int32_t idx, const bool & val) {
         if(idx > INVALID && idx < MAX_VALUE && instance()->settingsValues[idx].dataType == TypeBool) {
             instance()->settingsValues[idx].bValue = val;
@@ -215,6 +220,7 @@ protected:
     std::string configPath;
     std::vector<SettingValue> settingsValues;
     std::vector<const char*> settingsNames;
+    std::map<std::string, std::string> settingsDynamic;
 
     bool bChanged;
 };

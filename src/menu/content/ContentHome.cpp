@@ -19,6 +19,7 @@
 #include "plugin/PluginLoader.h"
 #include "custom/gui/DefaultGuiSwitch.h"
 #include "Application.h"
+#include "settings/CSettings.h"
 
 ContentHome::ContentHome():ContentTemplate()
     , welcomeHeadLineLabel(gettext("Welcome to the Wii U plugin loader"))
@@ -114,10 +115,16 @@ ContentHome::ContentHome():ContentTemplate()
         element->setSoundClick(buttonClickSound);
         element->valueChanged.connect(this, &ContentHome::OnValueChanged);
 
-        for (std::vector<PluginInformation *>::iterator itOther = pluginListLoaded.begin() ; itOther != pluginListLoaded.end(); ++itOther) {
-            PluginInformation * otherPlugin = *itOther;
-            if(otherPlugin->getPath().compare(curPlugin->getPath()) == 0) {
+        if (pluginListLoaded.empty()) {
+            if (CSettings::instance()->getDynamicValue(curPlugin->getPath()).compare("1") == 0) {
                 element->setValue(true);
+            }
+        } else {
+            for (std::vector<PluginInformation *>::iterator itOther = pluginListLoaded.begin() ; itOther != pluginListLoaded.end(); ++itOther) {
+                PluginInformation * otherPlugin = *itOther;
+                if(otherPlugin->getPath().compare(curPlugin->getPath()) == 0) {
+                    element->setValue(true);
+                }
             }
         }
         pluginMapping[element] = curPlugin;

@@ -111,11 +111,13 @@ bool CSettings::Load() {
         while((valueSplit[1].size() > 0) && valueSplit[1][ valueSplit[1].size() - 1 ] == ' ')
             valueSplit[1].resize(valueSplit[1].size() - 1);
 
+        bool found_name = false;
         for(uint32_t n = 0; n < settingsNames.size(); n++) {
             if(!settingsNames[n])
                 continue;
 
             if(valueSplit[0] == settingsNames[n]) {
+                found_name = true;
                 switch(settingsValues[n].dataType) {
                 case TypeBool:
                     settingsValues[n].bValue = atoi(valueSplit[1].c_str());
@@ -151,6 +153,9 @@ bool CSettings::Load() {
                     break;
                 }
             }
+        }
+        if (found_name == false) {
+            settingsDynamic.insert({valueSplit[0], valueSplit[1]});
         }
     }
 
